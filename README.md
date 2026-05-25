@@ -24,7 +24,7 @@ Camera → YOLO (pixel cx,cy) → pixel_to_robot (x_mm,y_mm) → IK (a1,a2,a3) �
 ## Quick Start
 
 **Windows:** double-click `run.bat`  
-**macOS:** run `./run.sh` in `mac/` folder
+**macOS:** double-click `mac/run.command` (or `chmod +x mac/run.command; ./mac/run.sh`)
 
 Or manually:
 ```bash
