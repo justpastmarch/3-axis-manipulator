@@ -27,6 +27,8 @@ LOG_MAX_LINES = 500              # 로그 최대 줄 수
 
 PROC_W, PROC_H = 640, 480        # YOLO/픽셀매핑 내부 처리 해상도
 
+CAMERA_INDEX: int | None = None  # 특정 카메라 인덱스 (None=자동 검색, 0=내장캠, 1=USB웹캠)
+
 HOME_ANGLES_DEFAULT = (90, 90, 90)
 HOME_CONFIG_FILE = "home_position.json"
 
@@ -81,6 +83,7 @@ class RobotGUI:
         self.last_command: tuple[int, int, int] | None = None
         self.last_command_time: float = 0.0
         self.home_angles: tuple[int, int, int] = self._load_home()
+        self._cam_index = -1
 
         self.fps_counter = 0
         self.fps_timer = time.time()
@@ -104,7 +107,12 @@ class RobotGUI:
 
         # 카메라
         self.camera = None
-        for idx in range(5):
+        indices_to_try: list[int] = []
+        if CAMERA_INDEX is not None:
+            indices_to_try = [CAMERA_INDEX] + [i for i in range(5) if i != CAMERA_INDEX]
+        else:
+            indices_to_try = list(range(5))
+        for idx in indices_to_try:
             cam = self.cv2.VideoCapture(idx) if self.cv2 else None
             if cam and cam.isOpened():
                 cam.set(self.cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -116,6 +124,10 @@ class RobotGUI:
                     break
             if cam:
                 cam.release()
+        if self.camera:
+            print(f"[CAMERA] Opened index {self._cam_index} ✓")
+        else:
+            print(f"[CAMERA] No camera found (tried indices: {indices_to_try})")
 
         # YOLO 모델
         self.model = None
@@ -563,7 +575,8 @@ class RobotGUI:
         self.root.destroy()
 
     def run(self) -> None:
-        self.log(f"Camera index {self._cam_index} opened ✓", "INFO")
+        if self.camera:
+            self.log(f"Camera index {self._cam_index} opened ✓", "INFO")
         if self.model:
             self.log("YOLO model loaded: yolov8n.pt ✓", "INFO")
         if self.serial:
