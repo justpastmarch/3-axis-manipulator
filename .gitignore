@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Model files (large, can be re-downloaded)
+*.pt
+*.pth
+
+# User-specific config
+home_position.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Virtual environment
+venv/
+.venv/
