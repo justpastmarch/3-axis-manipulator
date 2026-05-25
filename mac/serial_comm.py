@@ -11,6 +11,8 @@ def _detect_port() -> str:
     """macOS에서 Arduino 포트 자동 감지, 실패/Windows면 기본값 반환."""
     if sys.platform == "darwin":
         patterns = [
+            "/dev/cu.usbmodem*",
+            "/dev/cu.usbserial*",
             "/dev/tty.usbmodem*",
             "/dev/tty.usbserial*",
             "/dev/tty.wchusbserial*",
