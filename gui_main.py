@@ -165,7 +165,7 @@ class RobotGUI:
             self.serial = SerialController(port=SERIAL_PORT)
             self.serial.connect()
         except Exception:
-            pass
+            self.serial = None
 
     # ── Home 자세 저장/불러오기 ─────────────────────────
 
